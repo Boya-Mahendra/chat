@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
+        h1 { color: green; text-align: center; }
+        .chat-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 400px;
+            overflow-y: auto;
+            background-color: black;
+            color: white;
+            margin-bottom: 15px;
+        }
+        .message { margin: 5px 0; }
+        .message strong { color: red; }
+        .message-content { color: green; }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        input[type="text"], textarea {
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 30%;
+        }
+        .button-group {
+            display: flex;
+            gap: 8px;
+        }
+        button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: darkgreen;
+        }
+        .clear-button {
+            background-color: red;
+        }
+        .clear-button:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat Room</h1>
+    
+    <div class="chat-box" id="chatBox">
+        {% for message in messages %}
+            <div class="message">
+                <strong>{{ message.username }}:</strong> <span class="message-content">{{ message.content }}</span> - <i>{{ message.timestamp }}</i>
+            </div>
+        {% empty %}
+            <p style="color:green;" align="center">No messages available</p>
+        {% endfor %}
+    </div>
+
+    <form action="{% url 'send_message' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username" required>
+        <textarea name="content" placeholder="Type your message..." required></textarea>
+        <div class="button-group">
+            <button type="submit">Send</button>
+            <button type="button" class="clear-button" onclick="clearChat()">Clear</button>
+        </div>
+    </form>
+
+    <script>
+        
+        const chatBox = document.getElementById('chatBox');
+        chatBox.scrollTop = chatBox.scrollHeight;
+        function clearChat() {
+            if (confirm("Are you sure you want to clear the chat?")) {
+                window.location.href = "{% url 'clear_chat' %}";
+            }
+        }
+    </script>
+</body>
+</html>
